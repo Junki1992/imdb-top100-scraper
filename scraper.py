@@ -5,7 +5,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
+import logging
 import time
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -18,6 +20,18 @@ chrome_options.add_argument("--start-maximized")
 chrome_options.add_argument("--window-size=1920,1080")  # 明示的にウィンドザサイズを設定
 chrome_options.add_argument("--disable-gpu")  # GPUの使用を無効化
 chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")  # User-Agentを設定
+
+# リトライ用関数
+def retry_driver_get(driver, url, retries=3, delay=5):
+    for attempt in range(retries):
+        try:
+            driver.get(url)
+            return True
+        except TimeoutException:
+            print(f"Timeout occurred, retrying {attempt + 1}/{retries}...")
+            logging.error(f"Timeout occurred, retrying {attempt + 1}/{retries}...")
+            time.sleep(delay)
+    return False
 
 def scrape_imdb_top_100():
     # WebDriverのセットアップ
