@@ -1,0 +1,43 @@
+name: Python application
+
+on:
+  push:
+    branches:
+      - main  # メインブランチに変更があったときに実行
+  pull_request:
+    branches:
+      - main  # プルリクエストがメインブランチに送られたときに実行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # GitHub Actions 上で実行するOS（Ubuntu）
+
+    steps:
+    # リポジトリのコードをチェックアウト
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Pythonのセットアップ
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'  # 必要なPythonのバージョンを指定
+
+    # 依存関係をインストール
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate  # 仮想環境を有効化
+        pip install -r requirements.txt  # 依存パッケージをインストール
+
+    # スクレイピングのスクリプトを実行
+    - name: Run scraper script
+      run: |
+        source venv/bin/activate
+        python scraper.py
+
+    # テストが必要な場合はここに追加
+    # - name: Run tests
+    #   run: |
+    #     source venv/bin/activate
+    #     python -m unittest discover tests/
