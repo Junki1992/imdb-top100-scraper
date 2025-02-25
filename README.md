@@ -59,5 +59,5 @@ python3 scheduler.py
 
 ## 📊 データの可視化
 ```bash
-python3 visualizer.py
+python3 scraper.py
 ```
