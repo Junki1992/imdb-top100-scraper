@@ -11,6 +11,7 @@ import logging
 import time
 import pandas as pd
 import matplotlib.pyplot as plt
+from slack_notifier import send_slack_notification
 
 chrome_options = Options()
 chrome_options.add_argument("--headless=new")  # 新しいheadlessモードを使用
@@ -101,4 +102,9 @@ def scrape_imdb_top_100():
     driver.quit()
 
 if __name__ == "__main__":
-    scrape_imdb_top_100()
+    try:
+        send_slack_notification("IMDbスクレイピングを開始しました...")
+        scrape_imdb_top_100()
+        send_slack_notification("IMDbスクレイピングが正常に終了しました!")
+    except Exception as e:
+        send_slack_notification(f"スクレイピングエラー発生:{e}")
